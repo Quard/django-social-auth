@@ -246,10 +246,10 @@ class SocialAuthBackend(ModelBackend):
         """Return social auth user instance for given uid for current
         backend.
 
-        Riase DoesNotExist exception if no entry.
+        Raise DoesNotExist exception if no entry.
         """
         return UserSocialAuth.objects.select_related('user')\
-                                     .get(provider=self.name, uid=uid)
+                                     .get(provider=self.name, uid=str(uid))
 
     def get_user_id(self, details, response):
         """Must return a unique ID from values returned on details"""
@@ -358,7 +358,7 @@ class OpenIDBackend(SocialAuthBackend):
         fullname = values.get('fullname') or ''
         first_name = values.get('first_name') or ''
         last_name = values.get('last_name') or ''
-
+        
         if not fullname and first_name and last_name:
             fullname = first_name + ' ' + last_name
         elif fullname:
