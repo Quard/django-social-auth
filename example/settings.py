@@ -1,5 +1,11 @@
 from os.path import abspath, dirname, basename, join
 
+try:
+    import social_auth
+except ImportError:
+    import sys
+    sys.path.insert(0, "..")
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -69,10 +75,14 @@ AUTHENTICATION_BACKENDS = (
     'social_auth.backends.google.GoogleBackend',
     'social_auth.backends.yahoo.YahooBackend',
     'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    'social_auth.backends.contrib.flickr.FlickrBackend',
+    'social_auth.backends.contrib.instagram.InstagramBackend',
     'social_auth.backends.OpenIDBackend',
     'social_auth.backends.contrib.livejournal.LiveJournalBackend',
+    'social_auth.backends.browserid.BrowserIDBackend',
     'social_auth.backends.contrib.vkontakte.VKontakteBackend',
     'social_auth.backends.contrib.yandex.YandexBackend',
+    'social_auth.backends.contrib.yandex.YandexOAuth2Backend',
     'social_auth.backends.contrib.odnoklassniki.OdnoklassnikiBackend',
     'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
     'social_auth.backends.contrib.mailru.MailruBackend',
@@ -84,12 +94,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
-    'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'social_auth.context_processors.social_auth_by_type_backends',
 )
-
-#SOCIAL_AUTH_ENABLED_BACKENDS = ('google', 'google-oauth', 'facebook')
 
 LOGIN_REDIRECT_URL = '/'
 

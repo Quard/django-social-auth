@@ -14,6 +14,7 @@ class for details on how to extend it.
 from django.utils import simplejson
 
 from social_auth.backends import ConsumerBasedOAuth, OAuthBackend, USERNAME
+from social_auth.backends.exceptions import AuthCanceled
 
 
 # Twitter configuration
@@ -33,11 +34,16 @@ class TwitterBackend(OAuthBackend):
 
     def get_user_details(self, response):
         """Return user details from Twitter account"""
+        try:
+            first_name, last_name = response['name'].split(' ', 1)
+        except:
+            first_name = response['name']
+            last_name = ''
         return {USERNAME: response['screen_name'],
                 'email': '',  # not supplied
                 'fullname': response['name'],
-                'first_name': response['name'],
-                'last_name': ''}
+                'first_name': first_name,
+                'last_name': last_name}
 
 
 class TwitterAuth(ConsumerBasedOAuth):
@@ -58,6 +64,13 @@ class TwitterAuth(ConsumerBasedOAuth):
             return simplejson.loads(json)
         except ValueError:
             return None
+
+    def auth_complete(self, *args, **kwargs):
+        """Completes loging process, must return user instance"""
+        if 'denied' in self.data:
+            raise AuthCanceled(self)
+        else:
+            return super(TwitterAuth, self).auth_complete(*args, **kwargs)
 
 
 # Backend definition
