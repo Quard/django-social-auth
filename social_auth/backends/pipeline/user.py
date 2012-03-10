@@ -89,9 +89,12 @@ def update_user_details(backend, details, response, user, is_new=False, *args,
 
     # check if values update should be left to signals handlers only
     if not setting('SOCIAL_AUTH_CHANGE_SIGNAL_ONLY'):
+        do_not_update_email = setting('SOCIAL_AUTH_DO_NOT_UPDATE_EMAIL') == True
         for name, value in details.iteritems():
             # do not update username, it was already generated
             if name in (USERNAME, 'id', 'pk'):
+                continue
+            if do_not_update_email and name == 'email' and not user.email:
                 continue
             if value and value != getattr(user, name, None):
                 setattr(user, name, value)
