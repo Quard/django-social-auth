@@ -11,6 +11,13 @@ class UserSocialAuthOption(admin.ModelAdmin):
     list_filter = ('provider',)
     raw_id_fields = ('user',)
     list_select_related = True
+    
+    def uid(self, usa):
+        if usa.provider == 'facebook':
+            return '<a href="http://facebook.com/profile.php?id=%s" ' \
+                'target="_blank">%s</a>' % (usa.uid, usa.uid)
+        return usa.uid
+    uid.allow_tags = True
 
 
 class NonceOption(admin.ModelAdmin):
