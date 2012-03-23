@@ -6,18 +6,27 @@ from social_auth.models import UserSocialAuth, Nonce, Association
 
 class UserSocialAuthOption(admin.ModelAdmin):
     """Social Auth user options"""
-    list_display = ('id', 'user', 'provider', 'uid')
+    list_display = ('id', 'user', 'provider', '_uid')
     search_fields = ('user__first_name', 'user__last_name', 'user__email')
     list_filter = ('provider',)
     raw_id_fields = ('user',)
     list_select_related = True
     
-    def uid(self, usa):
+    def _uid(self, usa):
+        link = None
         if usa.provider == 'facebook':
-            return '<a href="http://facebook.com/profile.php?id=%s" ' \
-                'target="_blank">%s</a>' % (usa.uid, usa.uid)
-        return usa.uid
-    uid.allow_tags = True
+            link = '<a href="http://facebook.com/profile.php?id=%s" ' \
+                'target="_blank">%s</a>'
+        elif usa.provider == 'twitter':
+            link = '<a href="twitter.com/#!/%s" target="_blank">%s</a>'
+        elif usa.provider == 'linkedin':
+            link = '<a href="http://www.linkedin.com/profile/view?id=%s">%s</a>'
+            
+        if link:
+            link = link % (usa.uid, usa.uid)
+
+        return link or usa.uid
+    _uid.allow_tags = True
 
 
 class NonceOption(admin.ModelAdmin):
