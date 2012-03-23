@@ -19,8 +19,6 @@ class UserSocialAuthOption(admin.ModelAdmin):
                 'target="_blank">%s</a>'
         elif usa.provider == 'twitter':
             link = '<a href="twitter.com/#!/%s" target="_blank">%s</a>'
-        elif usa.provider == 'linkedin':
-            link = '<a href="http://www.linkedin.com/profile/view?id=%s">%s</a>'
             
         if link:
             link = link % (usa.uid, usa.uid)
